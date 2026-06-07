@@ -107,46 +107,17 @@ jobs:
            make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- clean
            make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
            echo "=== STEP 2: INJECTING CODE PATCH ==="
-           cat << 'EOF' > $HOME/patch_macro.h
-           ifndef __PATCH_MACRO_H__
-           define __PATCH_MACRO_H__
-        
-           undef asm_volatile_goto
-           define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)
-        
-           endif
-           EOF
-           python3 -c '
-           import os
-
-           target_file = "include/linux/compiler-gcc.h"
-        
-           if os.path.exists(target_file):
-            with open(target_file, "r") as f:
-                content = f.read()
-            
-            old_macro = "#define asm_volatile_goto(x...) do { asm goto(x); asm (\"\" : : : \"memory\"); } while (0)"
-            
-            if "asm_volatile_goto" in content:
-                lines = content.splitlines()
-                for i, line in enumerate(lines):
-                    if "#define asm_volatile_goto" in line:
-                        lines[i] = "#define asm_volatile_goto(x...) do { asm goto(x); asm volatile(\"\" : : : \"memory\"); } while (0)"
-                
-                with open(target_file, "w") as f:
-                    f.write("\n".join(lines) + "\n")
-                print("Successfully updated compiler-gcc.h with modern constraints.")
-           else:
-            print("Error: compiler-gcc.h not found at standard path!")
-            '
+           if [ -f scripts/headers_install.sh ]; then
+            sed -i 's/asm_volatile_goto//g' scripts/headers_install.sh
+           fi
            echo "=== STEP 3: VERIFYING INJECTION WAS SUCCESSFUL ==="
-           tail -n 5 include/linux/compiler_types.h
-           echo "" >> include/linux/compiler_types.h
-           echo "#undef asm_volatile_goto" >> include/linux/compiler_types.h
-           echo '#define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)' >> include/linux/compiler_types.h
+           find include/linux/ -name "compiler*.h" -exec sed -i 's/asm_volatile_goto/asm/g' {} +
            echo "=== STEP 4: RUNNING COMPILATION ==="
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KCFLAGS="-w" CFLAGS="-w" Image
-        
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+            KCFLAGS="-w -DCONFIG_HAVE_ARCH_COMPILER_H" \
+            CFLAGS="-w" \
+            Image
+          
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
         with:
