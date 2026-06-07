@@ -110,7 +110,7 @@ jobs:
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KCFLAGS="-Wstrict-prototypes -Wimplicit-function-declaration" -j$(nproc)
 
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
