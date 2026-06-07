@@ -91,10 +91,6 @@ jobs:
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
           args: ${{ steps.geutputs.args }}
-          CFLAGS: "-w"
-          KFLAGS: "-w"
-          KCFLAGS: "-w"
-          EXTRA_CFLAGS: "-w"
         run: |
            echo "==Installing Headers=="
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linu-gnu- headers_install
