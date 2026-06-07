@@ -138,7 +138,7 @@ jobs:
          with open(filepath, "w") as f:
             f.write(fixed_content)
          print("Surgical patch applied successfully.")
-    
+         '
          echo "=== Verifying Patch ==="
          grep -n "asm_volatile_goto" -A 5 arch/arm64/include/asm/jump_label.h || true
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
