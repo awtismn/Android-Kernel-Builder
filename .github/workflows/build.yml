@@ -100,10 +100,7 @@ jobs:
            mkdir -p include/config/
            touch include/config/headers_install.h
            echo "==Build Kernel=="
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-            KCFLAGS="-w -DCONFIG_HAVE_ARCH_COMPILER_H" \
-            CFLAGS="-w" \
-            Image
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
           
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
