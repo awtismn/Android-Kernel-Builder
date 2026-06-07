@@ -152,6 +152,7 @@ jobs:
            fi
            mkdir -p include/firmware
            echo "static const unsigned char fw_sample[] = { 0x00 };" > include/firmware/fw_sample.i
+           echo "static const unsigned char fw_sample2[] = { 0x00 };" > include/firmware/fw_sample2.i
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
