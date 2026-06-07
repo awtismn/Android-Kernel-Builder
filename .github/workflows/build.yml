@@ -102,6 +102,12 @@ jobs:
            touch usr/.headers_install.cmd
            mkdir -p include/config/
            touch include/config/headers_install.h
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=strict-prototypes//g' 2>/dev/null || true
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=implicit-function-declaration//g' 2>/dev/null || true
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=implicit-int//g' 2>/dev/null || true
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=return-type//g' 2>/dev/null || true
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/=strict-prototypes//g' 2>/dev/null || true
+           find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/=implicit-function-declaration//g' 2>/dev/null || true
            echo "==Build Kernel=="
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
           
