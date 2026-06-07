@@ -103,41 +103,22 @@ jobs:
           KCFLAGS: "-w -DCONFIG_HAVE_ARCH_COMPILER_H -Dasm_volatile_goto=asm"
           EXTRA_CFLAGS: "-w -D__GCC_ASM_FLAG_OUTPUTS__"
         run: |
-          python3 -c '
-          import os
-
-          filepath = "include/linux/compiler_types.h"
-          if not os.path.exists(filepath):
-            print("File not found! Trying fallback path...")
-            filepath = "include/linux/compiler-gcc.h"
-
-          with open(filepath, "r") as f:
-            lines = f.readlines()
-
-          new_lines = []
-          patched = False
-          for line in lines:
-            if "#define asm_volatile_goto" in line and "do {" in line:
-                
-                line = "#define asm_volatile_goto(x...) do { asm goto(x); asm volatile(\"\" : : : \"memory\"); } while (0)\n"
-                patched = True
-            new_lines.append(line)
-
-          with open(filepath, "w") as f:
-            f.write("".join(new_lines))
-
-          if patched:
-            print(f"Successfully applied precision patch to {filepath}")
-          else:
-            print("Warning: Macro pattern not found in file layout.")
-          '
-          echo "" >> include/linux/compiler_types.h
-          echo "/* Force override of broken modern GCC asm goto bug */" >> include/linux/compiler_types.h
-          echo "#undef asm_volatile_goto" >> include/linux/compiler_types.h
-          echo '#define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)' >> include/linux/compiler_types.h
-          tail -n 5 include/linux/compiler_types.h
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" Image
-      
+           echo "=== STEP 1: FORCE-CLEANING TREE ==="
+           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- clean
+        
+           echo "=== STEP 2: INJECTING CODE PATCH ==="
+           echo '#undef asm_volatile_goto' >> include/linux/compiler_types.h
+           echo '#define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)' >> include/linux/compiler_types.h
+        
+           echo "=== STEP 3: VERIFYING INJECTION WAS SUCCESSFUL ==="
+           tail -n 5 include/linux/compiler_types.h
+        
+           echo "=== STEP 4: GENERATING DEFCONFIG ==="
+           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
+        
+           echo "=== STEP 5: RUNNING COMPILATION ==="
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
+        
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
         with:
