@@ -102,7 +102,6 @@ jobs:
            touch usr/.headers_install.cmd
            mkdir -p include/config/
            touch include/config/headers_install.h
-           echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-error" >> Makefile
            find scripts/ -type f -exec sed -i 's/error, forbidden warning//g' {} + 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=strict-prototypes//g' 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=implicit-function-declaration//g' 2>/dev/null || true
@@ -117,9 +116,16 @@ jobs:
            find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
+           echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
+           echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
            if [ -f kernel/sched/walt/walt.c ]; then
             git checkout -- kernel/sched/walt/walt.c 2>/dev/null || true
+            sed -i 's/#endif//g' kernel/sched/walt/walt.c
+            sed -i 's/#if 0//g' kernel/sched/walt/walt.c
+            git checkout -- kernel/sched/walt/walt.c 2>/dev/null || true
+           fi
+           if [ -f kernel/sched/walt/Makefile ]; then
             echo "subdir-ccflags-y += -Wno-format -Wno-error -w" >> kernel/sched/walt/Makefile
             echo "CFLAGS_walt.o := -Wno-format -Wno-error -w" >> kernel/sched/walt/Makefile
            fi
