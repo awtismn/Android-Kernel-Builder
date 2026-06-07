@@ -107,17 +107,25 @@ jobs:
            make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- clean
         
            echo "=== STEP 2: INJECTING CODE PATCH ==="
-           echo '#undef asm_volatile_goto' >> include/linux/compiler_types.h
-           echo '#define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)' >> include/linux/compiler_types.h
+           cat << 'EOF' > $HOME/patch_macro.h
+           ifndef __PATCH_MACRO_H__
+           define __PATCH_MACRO_H__
+        
+           undef asm_volatile_goto
+           define asm_volatile_goto(x...) do { asm goto(x); asm volatile("" : : : "memory"); } while (0)
+        
+           endif
+           EOF
         
            echo "=== STEP 3: VERIFYING INJECTION WAS SUCCESSFUL ==="
            tail -n 5 include/linux/compiler_types.h
         
-           echo "=== STEP 4: GENERATING DEFCONFIG ==="
-           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
-        
-           echo "=== STEP 5: RUNNING COMPILATION ==="
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KFLAGS="-w" CFLAGS="-w" Image
+           echo "=== STEP 4: RUNNING COMPILATION ==="
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+            KCFLAGS="-w -include $HOME/patch_macro.h" \
+            CFLAGS="-w -include $HOME/patch_macro.h" \
+            EXTRA_CFLAGS="-include $HOME/patch_macro.h" \
+            Image
         
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
