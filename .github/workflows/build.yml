@@ -144,6 +144,8 @@ jobs:
            if [ -f security/samsung/defex_lsm/pack_rules.c ]; then
             sed -i 's|#define SAFE_STRCOPY.*|#define SAFE_STRCOPY(dst, src) do { snprintf(dst, sizeof(dst), "%s", src); } while(0)|g' security/samsung/defex_lsm/pack_rules.c
            fi
+           mkdir -p include/firmware
+           echo "static const unsigned char fw_sample[] = { 0x00 };" > include/firmware/fw_sample.i
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
