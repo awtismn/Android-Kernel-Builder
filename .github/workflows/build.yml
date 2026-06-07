@@ -101,8 +101,8 @@ jobs:
         env:
           args: ${{ steps.geutputs.args }}
           CFLAGS: "-w"
-          KCFLAGS: ""
-          EXTRA_CFLAGS: "-w"
+          KCFLAGS: "-w -DCONFIG_HAVE_ARCH_COMPILER_H -Dasm_volatile_goto=asm"
+          EXTRA_CFLAGS: "-w -D__GCC_ASM_FLAG_OUTPUTS__"
         run: |
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
