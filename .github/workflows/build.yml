@@ -87,14 +87,6 @@ jobs:
          make ARCH=arm64 mrproper
          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
 
-      - name: "Install Kernel Headers"
-        working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
-        env:
-         CFLAGS: "-w"
-         KCFLAGS: "-w"
-        run: |
-         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
-
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
