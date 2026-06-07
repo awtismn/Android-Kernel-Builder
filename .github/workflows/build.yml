@@ -87,7 +87,6 @@ jobs:
           if [ -d "./drivers/kernelsu" ]; then
             rm -rf "./drivers/kernelsu"
           fi
-          make ARCH=arm64 mrproper
           
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
 
@@ -102,7 +101,9 @@ jobs:
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-          make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig
+        rm -rf out/
+        make ARCH=arm64 mrproper
+        make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig
 
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
