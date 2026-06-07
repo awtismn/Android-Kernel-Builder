@@ -114,6 +114,9 @@ jobs:
            find . -type f -exec sed -i 's/-Wno-error=return-type//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
+           if [ -f kernel/sched/walt/walt.c ]; then
+            sed -i 's/p->pid/(unsigned long long)p->pid/g' kernel/sched/walt/walt.c
+           fi
            echo "==Build Kernel=="
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
           
