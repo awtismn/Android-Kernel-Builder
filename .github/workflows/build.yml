@@ -110,9 +110,9 @@ jobs:
            find . -type f -exec sed -i 's/-Wno-error=return-type//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
-           if [ -d kernel/sched/walt ]; then
-            echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
-           fi
+           sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
+           echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
+           sed -i 's/trace_walt_task_dump/#if 0\n\/\/trace_walt_task_dump/g'
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
