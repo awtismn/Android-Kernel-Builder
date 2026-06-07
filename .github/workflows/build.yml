@@ -119,12 +119,28 @@ jobs:
           KCFLAGS: ""
           EXTRA_CFLAGS: "-w"
         run: |
-          sed -i 's/"i" (key)/"S" (\&key->key)/g' arch/arm64/include/asm/jump_label.h
-          echo "Applying comprehensive ARM64 jump label patches..."
-          sed -i 's/"i" (key)/"S" (\&key->key)/g' arch/arm64/include/asm/jump_label.h
-          sed -i 's/"i" (\&((struct static_key_true \*)key)->key)/"S" (\&((struct static_key_true \*)key)->key)/g' arch/arm64/include/asm/jump_label.h
-          sed -i 's/"i" (\&((struct static_key_false \*)key)->key)/"S" (\&((struct static_key_false \*)key)->key)/g' arch/arm64/include/asm/jump_label.h
-          sed -i 's/: "i" (key) /: "S" (\&key->key) /g' arch/arm64/include/asm/jump_label.h
+         python3 -c '
+         import os
+
+         filepath = "arch/arm64/include/asm/jump_label.h"
+         if not os.path.exists(filepath):
+            print(f"Error: {filepath} not found!") 
+            exit(0)
+
+         with open(filepath, "r") as f:
+            content = f.read()
+         fixed_content = content.replace(": \"i\" (key)", ": \"S\" (\&key->key)")
+         fixed_content = fixed_content.replace(": \"i\" (key),", ": \"S\" (\&key->key),")
+         fixed_content = fixed_content.replace("\"i\" (key)", "\"S\" (\&key->key)")
+         fixed_content = fixed_content.replace("\"i\" (&((struct static_key_true *)key)->key)", "\"S\" (&((struct static_key_true *)key)->key)")
+         fixed_content = fixed_content.replace("\"i\" (&((struct static_key_false *)key)->key)", "\"S\" (&((struct static_key_false *)key)->key)")
+
+         with open(filepath, "w") as f:
+            f.write(fixed_content)
+         print("Surgical patch applied successfully.")
+    
+         echo "=== Verifying Patch ==="
+         grep -n "asm_volatile_goto" -A 5 arch/arm64/include/asm/jump_label.h || true
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
       
