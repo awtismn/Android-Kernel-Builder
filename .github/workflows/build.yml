@@ -101,9 +101,9 @@ jobs:
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-        rm -rf out/
-        make ARCH=arm64 mrproper
-        make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig
+         rm -rf out/
+         make ARCH=arm64 mrproper
+         make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig 
 
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
