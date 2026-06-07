@@ -115,11 +115,11 @@ jobs:
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
           args: ${{ steps.geutputs.args }}
-          CFLAGS: ""
+          CFLAGS: "-w"
           KCFLAGS: ""
-          EXTRA_CFLAGS: ""
+          EXTRA_CFLAGS: "-w"
         run: |
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
+          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
       
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
