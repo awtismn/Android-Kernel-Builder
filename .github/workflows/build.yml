@@ -77,40 +77,6 @@ jobs:
 
           echo "PATH Variable: $PATH"
 
-      - name: "😎 Set args"
-        id: generate-args
-        working-directory: ./${{ env.kernelDir }}
-        env:
-          params: "${{ toJSON(matrix.repos.params) }}"
-          THREAD: $(nproc --all)
-        run: |
-          echo "PATH Variable: $PATH"
-          ARCH=$(echo arm64 | jq -r ".ARCH")
-          CROSS_COMPILE=$(echo aarch64-linux-gnu- | jq -r ".CROSS_COMPILE"
-          AR=$(echo $params | jq -r ".AR")
-          CC=$(echo $params | jq -r ".CC")
-
-          echo "ARCH=$ARCH" >> $GITHUB_ENV
-
-          args="-j$(nproc --all)"
-          if [ -n "${{ env.OUT_DIR }}" ]; then
-            mkdir -p $(pwd)/${{ env.OUT_DIR }}
-            args="$args O=$(pwd)/${{ env.OUT_DIR }}"
-          fi
-          if [ -n "$ARCH" ]; then
-            args="$args ARCH=$ARCH"
-          fi
-          if [ -n "$CROSS_COMPILE" ]; then
-            args="$args CROSS_COMPILE=$CROSS_COMPILE"
-          fi
-          if [ -n "$AR" ]; then
-            args="$args AR=$AR"
-          fi
-          if [ -n "$CC" ]; then
-            args="$args CC=$CC"
-          fi
-          echo "args=$args" >> $GITHUB_OUTPUT
-
       - name: "😋 Update KernelSU"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         if: ${{ env.withKernelSU == 'true' }}
