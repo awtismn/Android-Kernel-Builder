@@ -53,8 +53,11 @@ jobs:
       - name: "⭐ Install prerequisites"
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential bc curl git zip ftp gcc-9-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
-
+          sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-9-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
+          mkdir -p $HOME/bin
+          ln -sf /usr/bin/aarch64-linux-gnu-gcc-9 $HOME/bin/aarch64-linux-gnu-gcc
+          ln -sf /usr/bin/aarch64-linux-gnu-ld.bfd $HOME/bin/aarch64-linux-gnu-ld
+          echo "$HOME/bin" >> $GITHUB_PATH
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
         run: |
@@ -84,7 +87,7 @@ jobs:
         run: |
          rm -rf out/
          make ARCH=arm64 mrproper
-         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc-9 vendor/gta9pwifi_eur_open_defconfig 
+         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
 
       - name: "Install Kernel Headers"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
@@ -92,7 +95,7 @@ jobs:
          CFLAGS: "-w"
          KCFLAGS: "-w"
         run: |
-         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc-9 headers_install
+         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
 
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
@@ -102,8 +105,8 @@ jobs:
           KCFLAGS: ""
           EXTRA_CFLAGS: "-w"
         run: |
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc-9 vendor/gta9pwifi_eur_open_defconfig 
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=aarch64-linux-gnu-gcc-9 KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
+          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
       
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
