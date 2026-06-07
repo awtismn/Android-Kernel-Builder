@@ -118,9 +118,7 @@ jobs:
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
            echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
-           echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
            if [ -f kernel/sched/walt/walt.c ]; then
-            git checkout -- kernel/sched/walt/walt.c 2>/dev/null || true
             sed -i 's/#endif//g' kernel/sched/walt/walt.c
             sed -i 's/#if 0//g' kernel/sched/walt/walt.c
             git checkout -- kernel/sched/walt/walt.c 2>/dev/null || true
@@ -136,6 +134,9 @@ jobs:
            if [ -f security/samsung/defex_lsm/Makefile ]; then
             git checkout -- security/samsung/defex_lsm/Makefile 2>/dev/null || true
             echo "CFLAGS_pack_rules.o := -Wno-stringop-truncation -Wno-error" >> security/samsung/defex_lsm/Makefile
+           fi
+           if [ -f security/samsung/defex_lsm/pack_rules.c ]; then
+            sed -i 's|#define SAFE_STRCOPY.*|#define SAFE_STRCOPY(dst, src) do { snprintf(dst, sizeof(dst), "%s", src); } while(0)|g' security/samsung/defex_lsm/pack_rules.c
            fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
