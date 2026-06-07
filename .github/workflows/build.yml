@@ -85,11 +85,8 @@ jobs:
           THREAD: $(nproc --all)
         run: |
           echo "PATH Variable: $PATH"
-          ARCH=$(echo $params | jq -r ".ARCH")
-          CROSS_COMPILE=$(echo $params | jq -r ".CROSS_COMPILE")
-          CROSS_COMPILE_COMPAT=$(echo $params | jq -r ".CROSS_COMPILE_COMPAT")
-          CROSS_COMPILE_ARM32=$(echo $params | jq -r ".CROSS_COMPILE_ARM32")
-          CLANG_TRIPLE=$(echo $params | jq -r ".CLANG_TRIPLE")
+          ARCH=$(echo arm64 | jq -r ".ARCH")
+          CROSS_COMPILE=$(echo aarch64-linux-gnu- | jq -r ".CROSS_COMPILE"
           AR=$(echo $params | jq -r ".AR")
           CC=$(echo $params | jq -r ".CC")
 
@@ -105,12 +102,6 @@ jobs:
           fi
           if [ -n "$CROSS_COMPILE" ]; then
             args="$args CROSS_COMPILE=$CROSS_COMPILE"
-          fi
-          if [ -n "$CLANG_TRIPLE" ]; then
-            args="$args CLANG_TRIPLE=$CLANG_TRIPLE"
-          fi
-          if [ -n "$CROSS_COMPILE_COMPAT" ]; then
-            args="$args CROSS_COMPILE_ARM32=$CROSS_COMPILE_COMPAT"
           fi
           if [ -n "$AR" ]; then
             args="$args AR=$AR"
@@ -153,7 +144,7 @@ jobs:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
           echo "PATH Variable: $PATH"
-          make ${args}
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
