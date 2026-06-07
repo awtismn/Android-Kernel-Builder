@@ -114,8 +114,8 @@ jobs:
            find . -type f -exec sed -i 's/-Wno-error=return-type//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
-           if [ -f kernel/sched/walt/walt.c ]; then
-            sed -i 's/p->pid/(unsigned long long)p->pid/g' kernel/sched/walt/walt.c
+           if [ -d kernel/sched/walt ]; then
+            echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
            fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
