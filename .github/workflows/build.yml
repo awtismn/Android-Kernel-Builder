@@ -118,6 +118,9 @@ jobs:
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
            echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
+           if [ -f drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h ]; then
+            sed -i 's/#define FTS_UPGRADE_FW_FILE.*/\/\/#define FTS_UPGRADE_FW_FILE ""/g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h
+           fi
            if [ -f kernel/sched/walt/trace.h ]; then
              sed -i '/#define TRACE_INCLUDE_PATH/d' kernel/sched/walt/trace.h
              sed -i 's|#define TRACE_INCLUDE_FILE trace|#define TRACE_INCLUDE_PATH ../../kernel/sched/walt\n#define TRACE_INCLUDE_FILE trace|g' kernel/sched/walt/trace.h
