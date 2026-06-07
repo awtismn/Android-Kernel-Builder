@@ -106,6 +106,7 @@ jobs:
          make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig 
 
       - name: "Install Kernel Headers"
+        working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
          CFLAGS: ""
          KCFLAGS: ""
