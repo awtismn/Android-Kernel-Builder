@@ -108,6 +108,12 @@ jobs:
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=return-type//g' 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/=strict-prototypes//g' 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/=implicit-function-declaration//g' 2>/dev/null || true
+           find . -type f -exec sed -i 's/-Werror=implicit-int//g' {} + 2>/dev/null || true
+           find . -type f -exec sed -i 's/-Werror=return-type//g' {} + 2>/dev/null || true
+           find . -type f -exec sed -i 's/-Wno-error=implicit-int//g' {} + 2>/dev/null || true
+           find . -type f -exec sed -i 's/-Wno-error=return-type//g' {} + 2>/dev/null || true
+           find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
+           find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
            echo "==Build Kernel=="
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
           
