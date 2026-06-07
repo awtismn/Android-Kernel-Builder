@@ -94,8 +94,6 @@ jobs:
           echo -e "\nCONFIG_HAVE_KPROBES=y" >> ./arch/arm64/configs/vendor/gta9pwifi_eur_open_defconfig 
           echo -e "\nCONFIG_KPROBE_EVENTS=y" >> ./arch/arm64/configs/vendor/gta9pwifi_eur_open_defconfig
           
-          cat ./arch/arm64/configs/vendor/gta9pwifi_eur_open_defconfig
-
       - name: "👍 Make defconfig"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
@@ -109,14 +107,14 @@ jobs:
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
          CFLAGS: ""
-         KCFLAGS: ""
+         KCFLAGS: "-Wno-error -Wno-pointer-sign"
         run: |
          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
 
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
-          args: ${{ steps.generate-args.outputs.args }}
+          args: ${{ steps.geutputs.args }}
           CFLAGS: ""
           KCFLAGS: ""
           EXTRA_CFLAGS: ""
