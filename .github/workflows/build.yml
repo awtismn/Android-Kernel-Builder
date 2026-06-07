@@ -97,7 +97,7 @@ jobs:
           EXTRA_CFLAGS: "-w"
         run: |
            echo "==Installing Headers=="
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linu-gnu- header_install
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linu-gnu- headers_install
            echo "==Spoofing Headers=="
            touch .headers_install.cmd
            touch usr/.headers_install.cmd
