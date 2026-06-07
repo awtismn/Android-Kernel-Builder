@@ -117,9 +117,15 @@ jobs:
            if [ -f kernel/sched/walt/walt.c ]; then
             sed -i 's/p->pid/(unsigned long long)p->pid/g' kernel/sched/walt/walt.c
            fi
+           mkdir -p scripts
+           echo '#!/bin/sh' > scripts/extract-cert
+           echo 'exit 0' >> scripts/extract-cert
+           chmod +x scripts/extract-cert
            echo "==Build Kernel=="
+           mkdir -p certs
+           touch certs/x509_certificate_list
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
-          
+           
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
         with:
