@@ -105,12 +105,19 @@ jobs:
          make ARCH=arm64 mrproper
          make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig 
 
+      - name: "Install Kernel Headers"
+        env:
+         CFLAGS: ""
+         KCFLAGS: ""
+        run: |
+         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
+
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KCFLAGS="-Wstrict-prototypes -Wimplicit-function-declaration" -j$(nproc)
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KCFLAGS="-Wstrict-prototypes -Wimplicit-function-declaration" -j$(nproc) vmlinux
 
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
