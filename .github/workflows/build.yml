@@ -90,10 +90,10 @@ jobs:
 
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
 
-          echo -e "\nCONFIG_KPROBES=y" >> ./arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-          echo -e "\nCONFIG_HAVE_KPROBES=y" >> ./arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-          echo -e "\nCONFIG_KPROBE_EVENTS=y" >> ./arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
-
+          echo -e "\nCONFIG_KPROBES=y" >> ./arch/arm64/configs/arm64/gta9pwifi_eur_open_defconfig 
+          echo -e "\nCONFIG_HAVE_KPROBES=y" >> ./arch/arm64/configs/arm64/gta9pwifi_eur_open_defconfig 
+          echo -e "\nCONFIG_KPROBE_EVENTS=y" >> ./arch/arm64/configs/arm64/gta9pwifi_eur_open_defconfig
+          
           cat ./arch/${{ env.ARCH }}/configs/${{ env.DEFCONFIG_NAME }}
 
       - name: "👍 Make defconfig"
@@ -101,7 +101,6 @@ jobs:
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-          echo "PATH Variable: $PATH"
           make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig
 
       - name: "🎶 Build kernel"
@@ -109,14 +108,13 @@ jobs:
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
-          echo "PATH Variable: $PATH"
           make O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
         with:
           name: Image(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ env.kernelDir }}/${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image
+          path: ./${{ env.kernelDir }}/out/arch/arm64/boot/Image
           if-no-files-found: ignore
           retention-days: 7
 
@@ -124,7 +122,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Image.gz(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ env.kernelDir }}/${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz
+          path: ../${{ env.kernelDir }}/out/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
 
@@ -132,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dtb(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ env.kernelDir }}/${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtb
+          path: ./${{ env.kernelDir }}/out/arch/arm64/boot/dtb
           if-no-files-found: ignore
           retention-days: 7
 
@@ -140,6 +138,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dtbo.img(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ env.kernelDir }}/${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo.img
+          path: ./${{ env.kernelDir }}/out/arch/arm64/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
