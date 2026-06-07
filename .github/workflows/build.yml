@@ -107,7 +107,7 @@ jobs:
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
          CFLAGS: ""
-         KCFLAGS: "-Wno-error -Wno-pointer-sign"
+         KCFLAGS: ""
         run: |
          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
 
@@ -116,7 +116,7 @@ jobs:
         env:
           args: ${{ steps.geutputs.args }}
           CFLAGS: ""
-          KCFLAGS: ""
+          KCFLAGS: "-Wno-error -Wno-pointer-sign"
           EXTRA_CFLAGS: ""
         run: |
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
