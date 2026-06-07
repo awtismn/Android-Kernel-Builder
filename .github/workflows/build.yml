@@ -121,6 +121,9 @@ jobs:
            if [ -f kernel/sched/walt/walt.c ]; then
             sed -i 's/.*trace_walt_task_dump.*/#if 0\n\ttrace_walt_task_dump(p);\n#endif/' kernel/sched/walt/walt.c
            fi
+           if [ -f mm/slub.c ]; then
+            sed -i 's/static ssize_t slab_owner_filter_write/unsigned long slab_owner_filter = 0;\nstatic ssize_t slab_owner_filter_write/g' mm/slub.c
+           fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
