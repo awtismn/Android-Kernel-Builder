@@ -78,16 +78,15 @@ jobs:
           echo -e "\nCONFIG_HAVE_KPROBES=y" >> ./arch/arm64/configs/vendor/gta9pwifi_eur_open_defconfig 
           echo -e "\nCONFIG_KPROBE_EVENTS=y" >> ./arch/arm64/configs/vendor/gta9pwifi_eur_open_defconfig
           
-      - name: "👍 Make defconfig"
+      - name: "Clean Source Tree"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
           args: ${{ steps.generate-args.outputs.args }}
         run: |
          rm -rf out/
          make ARCH=arm64 mrproper
-         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
       
-      - name: "🎶 Build kernel"
+      - name: "Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
           args: ${{ steps.geutputs.args }}
@@ -121,8 +120,10 @@ jobs:
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
            echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
+           mkdir -p include/firmware
            if [ -f drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h ]; then
-            sed -i 's/#define FTS_UPGRADE_FW_FILE.*/\/\/#define FTS_UPGRADE_FW_FILE ""/g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h
+            echo "static const unsigned char fw_sample[] = { 0x00 };" > include/firmware/fw_sample.i
+           echo "static const unsigned char fw_sample2[] = { 0x00 };" > include/firmware/fw_sample2.i
            fi
            if [ -f kernel/sched/walt/trace.h ]; then
              sed -i '/#define TRACE_INCLUDE_PATH/d' kernel/sched/walt/trace.h
@@ -150,9 +151,6 @@ jobs:
            if [ -f security/samsung/defex_lsm/pack_rules.c ]; then
             sed -i 's|#define SAFE_STRCOPY.*|#define SAFE_STRCOPY(dst, src) do { snprintf(dst, sizeof(dst), "%s", src); } while(0)|g' security/samsung/defex_lsm/pack_rules.c
            fi
-           mkdir -p include/firmware
-           echo "static const unsigned char fw_sample[] = { 0x00 };" > include/firmware/fw_sample.i
-           echo "static const unsigned char fw_sample2[] = { 0x00 };" > include/firmware/fw_sample2.i
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
@@ -160,7 +158,7 @@ jobs:
            echo "==Build Kernel=="
            mkdir -p certs
            touch certs/x509_certificate_list
-           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
            
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
