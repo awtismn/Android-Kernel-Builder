@@ -98,6 +98,7 @@ jobs:
            echo "==Installing Headers=="
            git checkout -- . 2>/dev/null || true
            git clean -fd 2>/dev/null || true
+           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
            make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linu-gnu- headers_install
            echo "==Spoofing Headers=="
            touch .headers_install.cmd
