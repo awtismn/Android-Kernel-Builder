@@ -52,7 +52,7 @@ jobs:
       - name: "⭐ Install prerequisites"
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential bc curl git zip ftp gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
+          sudo apt-get install -y build-essential bc curl git zip ftp gcc-9-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
 
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
@@ -101,15 +101,15 @@ jobs:
         run: |
          rm -rf out/
          make ARCH=arm64 mrproper
-         make ARCH=arm64 vendor/gta9pwifi_eur_open_defconfig 
+         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-9 vendor/gta9pwifi_eur_open_defconfig 
 
       - name: "Install Kernel Headers"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         env:
-         CFLAGS: ""
-         KCFLAGS: ""
+         CFLAGS: "-w"
+         KCFLAGS: "-w"
         run: |
-         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
+         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-9 headers_install
 
       - name: "🎶 Build kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
@@ -119,30 +119,8 @@ jobs:
           KCFLAGS: ""
           EXTRA_CFLAGS: "-w"
         run: |
-         python3 -c '
-         import os
-
-         filepath = "arch/arm64/include/asm/jump_label.h"
-         if not os.path.exists(filepath):
-            print(f"Error: {filepath} not found!") 
-            exit(0)
-
-         with open(filepath, "r") as f:
-            content = f.read()
-         fixed_content = content.replace(": \"i\" (key)", ": \"S\" (\&key->key)")
-         fixed_content = fixed_content.replace(": \"i\" (key),", ": \"S\" (\&key->key),")
-         fixed_content = fixed_content.replace("\"i\" (key)", "\"S\" (\&key->key)")
-         fixed_content = fixed_content.replace("\"i\" (&((struct static_key_true *)key)->key)", "\"S\" (&((struct static_key_true *)key)->key)")
-         fixed_content = fixed_content.replace("\"i\" (&((struct static_key_false *)key)->key)", "\"S\" (&((struct static_key_false *)key)->key)")
-
-         with open(filepath, "w") as f:
-            f.write(fixed_content)
-         print("Surgical patch applied successfully.")
-         '
-         echo "=== Verifying Patch ==="
-         grep -n "asm_volatile_goto" -A 5 arch/arm64/include/asm/jump_label.h || true
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig 
-          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-9 vendor/gta9pwifi_eur_open_defconfig 
+          make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-9 KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
       
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
