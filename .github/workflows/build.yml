@@ -119,6 +119,7 @@ jobs:
           KCFLAGS: ""
           EXTRA_CFLAGS: "-w"
         run: |
+          sed -i 's/"i" (key)/"S" (\&key->key)/g' arch/arm64/include/asm/jump_label.h
           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KBUILD_CFLAGS="-w -Wno-error -Wno-pointer-sign -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar" prepare0 Image
       
       - name: "💛 Upload Image"
