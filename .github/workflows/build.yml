@@ -122,9 +122,10 @@ jobs:
            echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            mkdir -p include/firmware
            if [ -f drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h ]; then
-            sed -i 's/#include FTS_UPGRADE_FW_FILE/\/\/ Inline fallback/g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_flash_spi.c
-            sed -i 's/#include FTS_UPGRADE_FW2_FILE/\/\/ Inline fallback 2/g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_flash_spi.c
-            sed -i '1s/^/static const unsigned char fw_sample[] = { 0x00 };\n/' drivers/input/touchscreen/focaltech_touch_spi/focaltech_flash_spi.c
+            git checkout -- drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h 2>/dev/null || true
+            sed -i 's|#define FTS_UPGRADE_FW.*_FILE.*|#define FTS_UPGRADE_FW_FILE "fw_sample.i"\n#define FTS_UPGRADE_FW2_FILE "fw_sample.i"\n#define FTS_UPGRADE_FW3_FILE "fw_sample.i"|g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h
+            echo "static const unsigned char fw_sample[] = { 0x00 };" > drivers/input/touchscreen/focaltech_touch_spi/fw_sample.i
+            echo "static const unsigned char fw_sample[] = { 0x00 };" > include/firmware/fw_sample.i
            fi
            if [ -f kernel/sched/walt/trace.h ]; then
              sed -i '/#define TRACE_INCLUDE_PATH/d' kernel/sched/walt/trace.h
