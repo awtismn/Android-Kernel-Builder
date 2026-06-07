@@ -119,13 +119,16 @@ jobs:
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
            echo "CFLAGS_walt.o := -Wno-format -Wno-error" >> kernel/sched/walt/Makefile
            if [ -f kernel/sched/walt/walt.c ]; then
+            git checkout -- kernel/sched/walt/walt.c 2>/dev/null || true
             echo "subdir-ccflags-y += -Wno-format -Wno-error -w" >> kernel/sched/walt/Makefile
             echo "CFLAGS_walt.o := -Wno-format -Wno-error -w" >> kernel/sched/walt/Makefile
            fi
            if [ -f mm/slub.c ]; then
+            git checkout -- mm/slub.c 2>/dev/null || true
             sed -i 's/static ssize_t slab_owner_filter_write/unsigned long slab_owner_filter = 0;\nstatic ssize_t slab_owner_filter_write/g' mm/slub.c
            fi
            if [ -f security/samsung/defex_lsm/Makefile ]; then
+            git checkout -- security/samsung/defex_lsm/Makefile 2>/dev/null || true
             echo "CFLAGS_pack_rules.o := -Wno-stringop-truncation -Wno-error" >> security/samsung/defex_lsm/Makefile
            fi
            mkdir -p scripts
