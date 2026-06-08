@@ -54,7 +54,6 @@ jobs:
           sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-9-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
           sudo rm -f /usr/bin/aarch64-linux-gnu-gcc
           sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc-9 /usr/bin/aarch64-linux-gnu-gcc
-          aarch64-linux-gnu-gcc --version
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
         run: |
