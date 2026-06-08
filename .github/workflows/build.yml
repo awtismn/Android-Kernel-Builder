@@ -153,6 +153,10 @@ jobs:
            if [ -f security/samsung/defex_lsm/pack_rules.c ]; then
             sed -i 's|#define SAFE_STRCOPY.*|#define SAFE_STRCOPY(dst, src) do { snprintf(dst, sizeof(dst), "%s", src); } while(0)|g' security/samsung/defex_lsm/pack_rules.c
            fi
+           if [ -f drivers/usb/typec/P86801_tcpc/Makefile ]; then
+            echo "ccflags-y += -Idrivers/usb/typec/P86801_tcpc" >> drivers/usb/typec/P86801_tcpc/Makefile
+            echo "ccflags-y += -Idrivers/usb/typec/P86801_tcpc/inc" >> drivers/usb/typec/P86801_tcpc/Makefile
+           fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
