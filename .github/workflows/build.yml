@@ -34,12 +34,12 @@ jobs:
       matrix:
         repos: ${{ fromJSON(needs.Set-repos.outputs.repos) }}
     env:
-      kernelDir: ${{ matrix.repos.kernelSource.name }}_${{ matrix.repos.kernelSource.device }}
+      kernelDir: ${{ matrix.repos.kernelSource.name }}
 
       kernelName: ${{ matrix.repos.kernelSource.name }}
       kernelRepo: ${{ matrix.repos.kernelSource.repo }}
       kernelBranch: ${{ matrix.repos.kernelSource.branch }}
-      kernelDevice: ${{ matrix.repos.kernelSource.device }}
+      kernelDevice: gta9pwifi_eur_open
 
       DEFCONFIG_NAME: ${{ matrix.repos.kernelSource.device }}_defconfig
 
@@ -58,7 +58,7 @@ jobs:
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
         run: |
-          git clone --recursive --branch $kernelBranch $kernelRepo $kernelName --depth=1
+          git clone --recursive --branch $kernelBranch $kernelRepo --depth=1
 
       - name: "😋 Update KernelSU"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
@@ -179,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Image.gz
-          path: ./${{ env.kernelDir }}/${{ env.kernelName }}/arch/arm64/boot/Image.gz
+          path: ./${{ env.kernelDir }}/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
 
@@ -187,7 +187,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dtb
-          path: ./${{ env.kernelDir }}/${{ env.kernelName }}/arch/arm64/boot/dtb
+          path: ./${{ env.kernelDir }}/arch/arm64/boot/dtb
           if-no-files-found: ignore
           retention-days: 7
 
