@@ -173,14 +173,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Image(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ github.workspace }}/miku-KernelSU_odin/arch/arm64/boot/Image
+          path: ${{ github.workspace }}/miku-KernelSU_odin/arch/arm64/boot/Image
           retention-days: 7
 
       - name: "💙 Upload Image.gz"
         uses: actions/upload-artifact@v4
         with:
           name: Image.gz(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
-          path: ./${{ github.workspace }}/miku-KernelSU_odin/arch/arm64/boot/Image.gz
+          path: ${{ github.workspace }}/miku-KernelSU_odin/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
 
