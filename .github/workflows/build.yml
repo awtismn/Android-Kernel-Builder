@@ -157,6 +157,9 @@ jobs:
             echo "ccflags-y += -Idrivers/usb/typec/P86801_tcpc" >> drivers/usb/typec/P86801_tcpc/Makefile
             echo "ccflags-y += -Idrivers/usb/typec/P86801_tcpc/inc" >> drivers/usb/typec/P86801_tcpc/Makefile
            fi
+           if [ -f drivers/soc/qcom/minidump_log.c ]; then
+            sed -i 's/md_dump_slabinfo();/\/\/ md_dump_slabinfo();/g' drivers/soc/qcom/minidump_log.c
+           fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
