@@ -56,7 +56,7 @@ jobs:
           sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc-9 /usr/bin/aarch64-linux-gnu-gcc
           aarch64-linux-gnu-gcc --version
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
-        working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
+        working-directory: ./${{ env.kernelDir }}
         run: |
           git clone --recursive --branch $kernelBranch $kernelRepo --depth=1
 
