@@ -36,12 +36,12 @@ jobs:
     env:
       kernelDir: ${{ matrix.repos.kernelSource.name }}
 
-      kernelName: gta9pwifi_kernel
+      kernelName: sm-x210_kernel
       kernelRepo: ${{ matrix.repos.kernelSource.repo }}
       kernelBranch: ${{ matrix.repos.kernelSource.branch }}
-      kernelDevice: gta9pwifi_eur_open
+      kernelDevice: ${{ matrix.repos.kernelSource.device }}
 
-      DEFCONFIG_NAME: ${{ matrix.repos.kernelSource.device }}_defconfig
+      DEFCONFIG_NAME: defconfig
 
       withKernelSU: ${{ matrix.repos.withKernelSU }}
     steps:
@@ -51,9 +51,7 @@ jobs:
       - name: "⭐ Install prerequisites"
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-9-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
-          sudo rm -f /usr/bin/aarch64-linux-gnu-gcc
-          sudo ln -sf /usr/bin/aarch64-linux-gnu-gcc-9 /usr/bin/aarch64-linux-gnu-gcc
+          sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
         run: |
