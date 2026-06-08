@@ -172,14 +172,14 @@ jobs:
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
         with:
-          name: Image(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
+          name: Image
           path: ./${{ env.kernelDir }}/arch/arm64/boot/Image
           retention-days: 7
 
       - name: "💙 Upload Image.gz"
         uses: actions/upload-artifact@v4
         with:
-          name: Image.gz(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
+          name: Image.gz
           path: ./${{ env.kernelDir }}/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
@@ -187,7 +187,7 @@ jobs:
       - name: "💜 Upload dtb"
         uses: actions/upload-artifact@v4
         with:
-          name: dtb(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
+          name: dtb
           path: ./${{ env.kernelDir }}/arch/arm64/boot/dtb
           if-no-files-found: ignore
           retention-days: 7
@@ -195,7 +195,7 @@ jobs:
       - name: "❤️ Upload dtbo.img"
         uses: actions/upload-artifact@v4
         with:
-          name: dtbo.img(${{ env.kernelDevice }}-${{ env.kernelName }}-${{ env.kernelBranch }})
+          name: dtbo.img
           path: ./${{ env.kernelDir }}/out/arch/arm64/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
