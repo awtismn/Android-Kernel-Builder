@@ -169,6 +169,9 @@ jobs:
             git checkout -- drivers/kernelsu/infra/seccomp_cache.c 2>/dev/null || true
             sed -i '1s/^/#ifndef SECCOMP_ARCH_NATIVE_NR\n#define SECCOMP_ARCH_NATIVE_NR 436\n#endif\n/' drivers/kernelsu/infra/seccomp_cache.c
            fi
+           if [ -f drivers/kernelsu/policy/allowlist.c ]; then
+            sed -i '1s/^/#ifndef TWA_RESUME\n#define TWA_RESUME 1\n#endif\n/' drivers/kernelsu/policy/allowlist.c
+           fi
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
