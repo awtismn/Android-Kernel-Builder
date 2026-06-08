@@ -92,6 +92,9 @@ jobs:
           CFLAGS: ""
           EXTRA_CFLAGS: ""
         run: |
+           echo "==Building The .Config=="
+           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
+           echo "==Spoofing The Headers=="
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=strict-prototypes//g' 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=implicit-function-declaration//g' 2>/dev/null || true
            find . -name "Makefile*" -o -name "*.mk" | xargs sed -i 's/-Werror=implicit-int//g' 2>/dev/null || true
@@ -104,15 +107,11 @@ jobs:
            find . -type f -exec sed -i 's/-Wno-error=return-type//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=implicit-int//g' {} + 2>/dev/null || true
            find . -type f -exec sed -i 's/=return-type//g' {} + 2>/dev/null || true
-           git checkout -- . 2>/dev/null || true
-           git clean -fd 2>/dev/null || true
-           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- vendor/gta9pwifi_eur_open_defconfig
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- headers_install
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules
            touch .headers_install.cmd
            touch usr/.headers_install.cmd
            mkdir -p include/config/
            touch include/config/headers_install.h
+           echo "==Bypassing Compiling Errors and Warnings=="
            find scripts/ -type f -exec sed -i 's/error, forbidden warning//g' {} + 2>/dev/null || true
            sed -i '/walt_task_dump(struct task_struct \*p)/,/}/ s/}/#endif\n}/' kernel/sched/walt/walt.c
            echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
@@ -164,7 +163,8 @@ jobs:
            echo "==Build Kernel=="
            mkdir -p certs
            touch certs/x509_certificate_list
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image
+           echo "==Finally Building The Kernel=="
+           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
            
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
