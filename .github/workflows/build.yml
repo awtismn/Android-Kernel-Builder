@@ -120,6 +120,9 @@ jobs:
            if [ -f drivers/kernelsu/feature/sucompat.c ]; then
             sed -i 's|<linux/pgtable.h>|<asm/pgtable.h>|g' drivers/kernelsu/feature/sucompat.c
            fi
+           if [ -f drivers/kernelsu/infra/seccomp_cache.c ]; then
+            sed -i '1s/^/#include <linux\/seccomp.h>\n/' drivers/kernelsu/infra/seccomp_cache.c
+           fi
            if [ -f drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h ]; then
             git checkout -- drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h 2>/dev/null || true
             sed -i 's|#define FTS_UPGRADE_FW.*_FILE.*|#define FTS_UPGRADE_FW_FILE "fw_sample.i"\n#define FTS_UPGRADE_FW2_FILE "fw_sample.i"\n#define FTS_UPGRADE_FW3_FILE "fw_sample.i"|g' drivers/input/touchscreen/focaltech_touch_spi/focaltech_config.h
