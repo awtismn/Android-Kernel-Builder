@@ -117,6 +117,9 @@ jobs:
            echo "KBUILD_CFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            echo "KBUILD_CPPFLAGS += -Wno-format -Wno-format-zero-length -Wno-stringop-truncation -Wno-error -w" >> Makefile
            mkdir -p include/firmware
+           if [ -f drivers/kernelsu/manager/pkg_observer.c ]; then
+            sed -i 's/\.handle_inode_event =/\.handle_event =/g' drivers/kernelsu/manager/pkg_observer.c
+           fi
            if [ -f drivers/kernelsu/feature/sucompat.c ]; then
             sed -i 's|<linux/pgtable.h>|<asm/pgtable.h>|g' drivers/kernelsu/feature/sucompat.c
            fi
