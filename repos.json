@@ -1,7 +1,7 @@
 [  {
     "kernelSource": {
       "name": "kernelbuild",
-      "repo": "https://github.com/awtismn/gta9pwifi_kernel",
+      "repo": "https://github.com/awtismn/sm-x210_kernel/tree/main",
       "branch": "main"
     },
     "withKernelSU": true,
