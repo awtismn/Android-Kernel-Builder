@@ -1,9 +1,8 @@
 [  {
     "kernelSource": {
-      "name": "miku-KernelSU",
+      "name": "kernelbuild",
       "repo": "https://github.com/awtismn/gta9pwifi_kernel",
-      "branch": "main",
-      "device": "odin"
+      "branch": "main"
     },
     "withKernelSU": true,
     "toolchains": [
