@@ -1,8 +1,8 @@
 [  {
     "kernelSource": {
       "name": "kernelbuild",
-      "repo": "https://github.com/awtismn/sm-x210_kernel/tree/main",
-      "branch": "main"
+      "repo": "https://github.com/awtismn/kernelbuild",
+      "branch": "master"
     },
     "withKernelSU": true,
     "toolchains": [
