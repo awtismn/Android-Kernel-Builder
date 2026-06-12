@@ -167,6 +167,7 @@ jobs:
             sed -i '1s/^/#ifndef TWA_RESUME\n#define TWA_RESUME 1\n#endif\n/' drivers/kernelsu/policy/allowlist.c
            fi
            sed -i '/unsigned long slab_owner_filter = 0;/d' mm/slub.c
+           sed -i '/unsigned long slab_owner_handles_size = 0;/d' mm/slub.c
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
