@@ -1,8 +1,8 @@
 [  {
     "kernelSource": {
-      "name": "kernelbuild",
-      "repo": "https://github.com/awtismn/kernelbuild",
-      "branch": "master"
+      "name": "gta9pwifi_kernel",
+      "repo": "https://github.com/awtismn/gta9pwifi_kernel",
+      "branch": "main"
     },
     "withKernelSU": true,
     "toolchains": [
