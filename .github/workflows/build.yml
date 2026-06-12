@@ -166,10 +166,8 @@ jobs:
            if [ -f drivers/kernelsu/policy/allowlist.c ]; then
             sed -i '1s/^/#ifndef TWA_RESUME\n#define TWA_RESUME 1\n#endif\n/' drivers/kernelsu/policy/allowlist.c
            fi
-           sed -i '/slab_owner_filter/d' mm/slub.c
-           sed -i '/slab_owner_handles_size/d' mm/slub.c
-           sed -i '4850i unsigned long slab_owner_filter = 0;' mm/slub.c
-           sed -i '4851i unsigned long slab_owner_handles_size = 0;' mm/slub.c
+           sed -i 's/unsigned long slab_owner_filter = 0;/static unsigned long slab_owner_filter = 0;/g' mm/slub.c
+           sed -i 's/unsigned long slab_owner_handles_size = 0;/static unsigned long slab_owner_handles_size = 0;/g' mm/slub.c
            sed -i 's/unsigned long md_slabowner_dump_size = .*/extern unsigned long md_slabowner_dump_size;/g' drivers/soc/qcom/minidump_log.c
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
