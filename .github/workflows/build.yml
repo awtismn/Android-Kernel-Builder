@@ -36,12 +36,12 @@ jobs:
     env:
       kernelDir: ${{ matrix.repos.kernelSource.name }}
 
-      kernelName: sm-x210_kernel
+      kernelName: gta9pwifi_kernel
       kernelRepo: ${{ matrix.repos.kernelSource.repo }}
       kernelBranch: ${{ matrix.repos.kernelSource.branch }}
       kernelDevice: ${{ matrix.repos.kernelSource.device }}
 
-      DEFCONFIG_NAME: defconfig
+      DEFCONFIG_NAME: gta9pwifi_eur_open_defconfig
 
       withKernelSU: ${{ matrix.repos.withKernelSU }}
     steps:
