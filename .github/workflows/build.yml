@@ -168,6 +168,7 @@ jobs:
            fi
            sed -i '/unsigned long slab_owner_filter = 0;/d' mm/slub.c
            sed -i '/unsigned long slab_owner_handles_size = 0;/d' mm/slub.c
+           sed -i 's/md_slabowner_dump_size/md_slabowner_dump_size_slub/g' mm/slub.c
            mkdir -p scripts
            echo '#!/bin/sh' > scripts/extract-cert
            echo 'exit 0' >> scripts/extract-cert
