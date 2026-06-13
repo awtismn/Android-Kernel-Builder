@@ -56,7 +56,7 @@ jobs:
         working-directory: ./${{ env.kernelDir }}
         run: |
           git clone --recursive --branch $kernelBranch $kernelRepo --depth=1
-          git clone --recursive --branch main https://github.com/awtismn/gta9pwifi_platform.git --depth-1
+          git clone --recursive --branch main https://github.com/awtismn/gta9pwifi_platform.git --depth=1
           
       - name: "😋 Update KernelSU"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
