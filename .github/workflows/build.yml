@@ -51,7 +51,8 @@ jobs:
       - name: "⭐ Install prerequisites"
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools lunch
+          sudo apt-get install -y build-essential binutils-aarch64-linux-gnu bc curl git zip ftp gcc-aarch64-linux-gnu libssl-dev lftp zstd wget libfl-dev python3 libarchive-tools
+          
       - name: "🌟 Clone kernel source => (${{ env.kernelRepo }})"
         working-directory: ./${{ env.kernelDir }}
         run: |
