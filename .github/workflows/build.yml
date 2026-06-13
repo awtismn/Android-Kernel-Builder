@@ -180,9 +180,7 @@ jobs:
            mkdir -p certs
            touch certs/x509_certificate_list
            echo "==Finally Building The Kernel=="
-           cd ..
-           sudo chmod 777 gta9pwifi_kernel/
-           cd gta9pwifi_kernel
+           sudo chmod +x build_64bit.sh
            ./build_64bit.sh
            
       - name: "💛 Upload Image"
