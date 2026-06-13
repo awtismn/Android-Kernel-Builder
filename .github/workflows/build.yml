@@ -181,7 +181,7 @@ jobs:
            touch certs/x509_certificate_list
            echo "==Finally Building The Kernel=="
            cd ..
-           sudo chmod 777 gta9pwifi_kern/
+           sudo chmod 777 gta9pwifi_kernel/
            cd gta9pwifi_kernel
            ./build_64bit.sh
            
