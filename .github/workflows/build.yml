@@ -56,8 +56,10 @@ jobs:
         working-directory: ./${{ env.kernelDir }}
         run: |
           git clone --recursive --branch $kernelBranch $kernelRepo --depth=1
+          cd gta9pwifi_kernel
           git clone --recursive --branch main https://github.com/awtismn/gta9pwifi_platform.git --depth=1
-          
+          cd gta9pwifi_platform
+          mv * ..
       - name: "😋 Update KernelSU"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         if: ${{ env.withKernelSU == 'true' }}
@@ -179,8 +181,8 @@ jobs:
            touch certs/x509_certificate_list
            echo "==Finally Building The Kernel=="
            cd ..
-           sudo chmod 777 gta9pwifi_platform/
-           cd gta9pwifi_platform
+           sudo chmod 777 gta9pwifi_kern/
+           cd gta9pwifi_kernel
            ./build_64bit.sh
            
       - name: "💛 Upload Image"
