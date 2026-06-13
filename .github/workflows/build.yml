@@ -178,7 +178,7 @@ jobs:
            mkdir -p certs
            touch certs/x509_certificate_list
            echo "==Finally Building The Kernel=="
-           make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+           ./build_64bit.sh
            
       - name: "💛 Upload Image"
         uses: actions/upload-artifact@v4
